@@ -1,0 +1,24 @@
+/* Home.css */
+
+.container {
+  width: 80%;
+  margin: 20px auto;
+}
+
+.card-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  flex: 0 0 calc(33.33% - 20px); /* Each card takes 33.33% width with a 20px gap */
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Consider the box-sizing for padding */
+}
+
+/* Add more styles as needed */
