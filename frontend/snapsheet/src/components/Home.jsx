@@ -47,8 +47,9 @@ function Home() {
             {listsheet.map((collection, index) => (
               <div key={index} className="card">
                 <h3>
-                  <Link to={`/sheet/${collection}`}> {collection}</Link>
-                  <button onClick={() => onDeleteSheet(collection)}>
+                  <Link to={`/sheet/${collection}`} className="fs-5 text-decoration-none"> {collection}</Link>
+                  <br />
+                  <button className="btn btn-outline-danger" onClick={() => onDeleteSheet(collection)}>
                     delete
                   </button>
                 </h3>

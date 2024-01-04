@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { AgGridReact } from "ag-grid-react"; // React Grid Logic
 import "ag-grid-community/styles/ag-grid.css"; // Core CSS
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useParams } from "react-router-dom";
@@ -16,7 +15,6 @@ function NewSheet() {
           `http://localhost:3030/get_entity/${paramName}`
         );
         setTreeData(response.data);
-        console.log(paramName);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -38,7 +36,6 @@ function NewSheet() {
           treeData.forEach((doc) => {
             data.push(extractData(doc));
           });
-          // finaldata = createRow(headings, data);
           setRowData(data);
           setColDefs(headings);
         }
@@ -48,7 +45,6 @@ function NewSheet() {
     };
     extractingData();
   }, [treeData]);
-  // console.log(JSON.stringify(rowData));
   return (
     // Container with theme & dimensions
     <div>
@@ -60,7 +56,6 @@ function NewSheet() {
             datatree={treeData}
             collection_name={paramName}
           />
-          {/* <h1>{JSON.stringify(rowData)}</h1>   */}
         </div>
       ) : (
         <p>loading...</p>
@@ -116,13 +111,16 @@ const extractData = (data) => {
       });
       finalDataObject.push(newPath);
     }
+    if (node.children && node.children.length > 0) {
+      finalDataObject.push({
+        "field 3": node.data
+      });
+    }
   };
 
   traverse(data, {});
-
   return finalDataObject;
 };
 
 export default NewSheet;
-
 // export default NewSheet;

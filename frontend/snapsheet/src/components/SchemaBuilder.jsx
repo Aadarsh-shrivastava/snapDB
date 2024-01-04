@@ -46,25 +46,38 @@ const TreeNode = ({
   };
 
   return (
-    <div style={{ marginLeft: 20 }}>
-      <div>
-        <input
-          name="label"
-          value={node.label}
-          onChange={(e) => HandleUpdateLabel(e.target.value)}
-        />
-        <input
-          name="name"
-          value={node.name}
-          onChange={(e) => handleRenameNode(e.target.value)}
-        />
-        <button onClick={handleAddChild} disabled={isAddingChild}>
-          +
-        </button>
-        <button onClick={handleDelete}>-</button>
+    <div>
+      <div className="d-flex justify-content-center flex-wrap mb-3">
+        <div className="row g-3 align-items-center">
+          <div className="col-auto align-temns-center">
+            <input
+              name="label"
+              className="form-control"
+              value={node.label}
+              onChange={(e) => HandleUpdateLabel(e.target.value)}
+            />
+          </div>
+          <div className="col-auto align-items-center">
+
+            <input
+              className="form-control"
+              name="name"
+              value={node.name}
+              onChange={(e) => handleRenameNode(e.target.value)}
+            />
+          </div>
+          <div className="col-auto align-items-center">
+            <button className="btn py-1 px-2 btn-outline-primary" onClick={handleAddChild} disabled={isAddingChild}>
+              +
+            </button>
+          </div>
+          <div className="col-auto align-items-center">
+            <button className="btn py-1 px-2 btn-outline-primary" onClick={handleDelete}>-</button>
+          </div>
+        </div>
       </div>
       {node.children && node.children.length > 0 && (
-        <div style={{ marginLeft: 20 }}>
+        <div className="ms-5">
           {node.children.map((child) => (
             <TreeNode
               key={child.id}
@@ -87,7 +100,7 @@ const TreeEditor = () => {
     label: "label-root",
     name: "root",
     children: [],
-    data: 0,
+    data: [],
   });
 
   const handleAddChild = async (parentId) => {
@@ -100,7 +113,7 @@ const TreeEditor = () => {
         label: `label ${newChildId}`,
         name: `child ${newChildId}`,
         children: [],
-        data: 0,
+        data: [],
       };
       if (!parentNode.children) {
         parentNode.children = [];
@@ -253,7 +266,7 @@ const TreeEditor = () => {
         handleUpdateLabel={handleUpdateLabel}
         onRenameNode={handleRenameNode}
       />
-      <button onClick={saveSchema}>Save Schema</button>
+      <button className="btn btn-success" onClick={saveSchema}>Save Schema</button>
     </div>
   );
 };
