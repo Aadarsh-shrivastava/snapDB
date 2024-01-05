@@ -112,15 +112,44 @@ const extractData = (data) => {
       finalDataObject.push(newPath);
     }
     if (node.children && node.children.length > 0) {
-      finalDataObject.push({
-        "field 3": node.data
+      let summedUpArray = Array.from(
+        { length: node.children[0].data.length },
+        () => 0
+      );
+      node.children.forEach((child) => {
+        const valuesArray = child.data.map((item) => item.value);
+        console.log(child.label, child.name, child);
+        summedUpArray = sumArrays(summedUpArray, valuesArray);
       });
+      const headingsArray = node.children[0].data.map(
+        (item) => item.column_name
+      );
+      const resultObject = {};
+
+      for (let i = 0; i < headingsArray.length; i++) {
+        resultObject[headingsArray[i]] = summedUpArray[i];
+      }
+
+      finalDataObject.push(resultObject);
     }
   };
-
   traverse(data, {});
   return finalDataObject;
 };
+
+function sumArrays(arr1, arr2) {
+  // Check if the arrays are of the same length
+  if (arr1.length !== arr2.length) {
+    throw new Error("Arrays must be of the same length");
+  }
+
+  // Sum up the arrays index-wise
+  const result = [];
+  for (let i = 0; i < arr1.length; i++) {
+    result.push(arr1[i] + arr2[i]);
+  }
+  return result;
+}
 
 export default NewSheet;
 // export default NewSheet;
