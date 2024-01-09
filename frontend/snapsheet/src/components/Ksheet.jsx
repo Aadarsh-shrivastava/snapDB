@@ -8,6 +8,7 @@ import ExcelSheet from "./ASGrid";
 function NewSheet() {
   const { paramName } = useParams();
   const [treeData, setTreeData] = useState(null);
+  const [temptreeData, setTemptreeData] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,6 +26,7 @@ function NewSheet() {
 
   var headings, finaldata;
   var data = [];
+  var tempData = [];
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
 
@@ -34,10 +36,13 @@ function NewSheet() {
         if (treeData) {
           headings = extractHeadings(treeData[0]);
           treeData.forEach((doc) => {
-            data.push(extractData(doc));
+            let a = extractData(doc);
+            data.push(a[0]);
+            tempData.push(a[1]);
           });
           setRowData(data);
           setColDefs(headings);
+          setTemptreeData(tempData);
         }
       } catch {
         console.log("fetchin...");
@@ -53,7 +58,7 @@ function NewSheet() {
           <ExcelSheet
             rowData={rowData}
             columnData={colDefs}
-            datatree={treeData}
+            datatree={temptreeData}
             collection_name={paramName}
           />
         </div>
@@ -92,6 +97,8 @@ const extractData = (data) => {
     return null;
   }
 
+  const newDataTree = JSON.parse(JSON.stringify(data));
+
   let finalDataObject = [];
 
   const traverse = (node, currentPath) => {
@@ -118,7 +125,6 @@ const extractData = (data) => {
       );
       node.children.forEach((child) => {
         const valuesArray = child.data.map((item) => item.value);
-        console.log(child.label, child.name, child);
         summedUpArray = sumArrays(summedUpArray, valuesArray);
       });
       const headingsArray = node.children[0].data.map(
@@ -129,12 +135,15 @@ const extractData = (data) => {
       for (let i = 0; i < headingsArray.length; i++) {
         resultObject[headingsArray[i]] = summedUpArray[i];
       }
+      node.data = node.children[0].data;
+      node.data.map((child, index) => (child.value = summedUpArray[index]));
+      console.log(node.data, "editing tree");
 
       finalDataObject.push(resultObject);
     }
   };
-  traverse(data, {});
-  return finalDataObject;
+  traverse(newDataTree, {});
+  return [finalDataObject, newDataTree];
 };
 
 function sumArrays(arr1, arr2) {
@@ -152,4 +161,3 @@ function sumArrays(arr1, arr2) {
 }
 
 export default NewSheet;
-// export default NewSheet;

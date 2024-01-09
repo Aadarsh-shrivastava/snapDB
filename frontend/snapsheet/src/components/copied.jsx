@@ -9,12 +9,10 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
 
   useEffect(() => {
     setDataTree(datatree);
-    // console.log(JSON.stringify(dataTree));
   }, [datatree]);
 
   useEffect(() => {
     setData(rowData);
-    // console.log(JSON.stringify(rowData));
   }, [rowData]);
 
   useEffect(() => {
@@ -30,7 +28,6 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
   ) => {
     const newData = [...data];
     if (colIndex == 0) {
-      console.log(colIndex, columnField);
       newData[sheetIndex].forEach((datum) => {
         datum[columnField.field] = value;
       });
@@ -41,8 +38,6 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
     setData(newData);
     const path = Object.values(data[sheetIndex][rowIndex]);
     updateTreeNodes(sheetIndex, path, columnField, value);
-
-    console.log(data);
   };
 
   const updateRootInTree = (sheetIndex, new_value, updateType, oldValue) => {
@@ -78,7 +73,7 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
       const newDataTree = JSON.parse(JSON.stringify(prevDataTree));
 
       const findNodeByPath = (node, path, pathIndex = 0) => {
-        console.log(path[pathIndex]);
+        // console.log(path[pathIndex]);
         if (
           node.children &&
           node.children.length === 0 &&
@@ -116,6 +111,7 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
       };
 
       const result = findNodeByPath(newDataTree[sheetIndex], path, 0);
+      recalTotal();
       return newDataTree;
     });
   };
@@ -217,27 +213,6 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
     addDataInDataTree(heading);
   };
 
-  const calDrillDown = (field) => {
-    setDataTree((prevDataTree) => {
-      const newDataTree = JSON.parse(JSON.stringify(prevDataTree));
-
-      const traverse = (node) => {
-        if (node.children && node.children.length > 0) {
-          //   if (node.data[field]) console.log("field exists", node.data);
-          console.log(node);
-          node.children.forEach((child) => traverse(child));
-        } else {
-        }
-      };
-
-      newDataTree.forEach((root) => {
-        traverse(root);
-      });
-
-      return newDataTree;
-    });
-  };
-
   const deleteColumn = (column_name) => {
     console.log(column_name);
     const newHeadings = [...headings];
@@ -311,6 +286,61 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
     });
   };
 
+  const recalTotal = () => {
+    // if (!data) {
+    //   return null;
+    // }
+    const data = JSON.parse(JSON.stringify(dataTree));
+    console.log(data);
+
+    let finalDataObject = [];
+
+    // const traverse = (node, currentPath) => {
+    //   if (node.children && node.children.length > 0) {
+    //     const newPath = {
+    //       ...currentPath,
+    //       [String(node.label)]: String(node.name),
+    //     };
+    //     node.children.forEach((child) => traverse(child, newPath));
+    //   } else {
+    //     const newPath = {
+    //       ...currentPath,
+    //       [String(node.label)]: String(node.name),
+    //     };
+    //     node.data.forEach((child) => {
+    //       newPath[String(child.column_name)] = String(child.value);
+    //     });
+    //     finalDataObject.push(newPath);
+    //   }
+    //   if (node.children && node.children.length > 0) {
+    //     let summedUpArray = Array.from(
+    //       { length: node.children[0].data.length },
+    //       () => 0
+    //     );
+    //     node.children.forEach((child) => {
+    //       const valuesArray = child.data.map((item) => item.value);
+    //       summedUpArray = sumArrays(summedUpArray, valuesArray);
+    //     });
+    //     const headingsArray = node.children[0].data.map(
+    //       (item) => item.column_name
+    //     );
+    //     const resultObject = {};
+
+    //     for (let i = 0; i < headingsArray.length; i++) {
+    //       resultObject[headingsArray[i]] = summedUpArray[i];
+    //     }
+    //     node.data = node.children[0].data;
+    //     node.data.map((child, index) => (child.value = summedUpArray[index]));
+
+    //     finalDataObject.push(resultObject);
+    //     console.log(data, "tree data");
+    //   }
+    // };
+    // traverse(data, {});
+    setDataTree(data);
+    // return [finalDataObject, newDataTree];
+  };
+
   useEffect(() => {
     const postData = async () => {
       try {
@@ -338,7 +368,7 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
 
   return (
     <>
-      {/* {JSON.stringify(dataTree)} */}
+      {JSON.stringify(dataTree)}
       <button className="btn btn-outline-primary p-1 m-2" onClick={addEntity}>
         Add Entity
       </button>
@@ -384,15 +414,6 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
                   <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
                   <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                 </svg>
-              </button>
-
-              <button
-                className="delete-button icon icon-tabler icon-tabler-trash"
-                onClick={() => {
-                  calDrillDown(column.field);
-                }}
-              >
-                Drill
               </button>
             </div>
           ))}
