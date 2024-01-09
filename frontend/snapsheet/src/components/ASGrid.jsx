@@ -121,6 +121,7 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
   };
 
   const handleHeadingChange = (columnIndex, value) => {
+    if (value == "" || value == headings[columnIndex].field) return;
     const newHeadings = headings;
     if (columnIndex == 0) {
       console.log(newHeadings);
@@ -336,6 +337,10 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
     postData();
   }, [dataTree]);
 
+  const deleteEntity = (sheetIndex) => {
+    console.log('sheetIndex');
+  };
+
   return (
     <>
       {/* {JSON.stringify(dataTree)} */}
@@ -346,83 +351,126 @@ const ExcelSheet = ({ rowData, columnData, datatree, collection_name }) => {
         Add Data
       </button>
       <div className="excel-sheet">
-        <div className="header-row">
-          {headings.map((column, colIndex) => (
-            <div className="header-cell-container">
-              <div
-                key={column.field}
-                className="header-cell"
-                contentEditable={column.editable}
-                suppressContentEditableWarning
-                onBlur={(e) =>
-                  handleHeadingChange(colIndex, e.target.innerText)
-                }
-              >
-                {column.field}
-              </div>
-              <button
-                className="delete-button icon icon-tabler icon-tabler-trash"
-                onClick={() => {
-                  deleteColumn(column.field);
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+        <div className="d-flex">
+          <button
+            style={{ visibility: "hidden" }}
+            className=".delete-entity-button  icon icon-tabler icon-tabler-trash"
+            disabled
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></svg>
+          </button>
+          <div className="header-row">
+            {headings.map((column, colIndex) => (
+              <div className="header-cell-container">
+                <div
+                  key={column.field}
+                  className="header-cell"
+                  contentEditable={column.editable}
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    handleHeadingChange(colIndex, e.target.innerText)
+                  }
                 >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M4 7l16 0" />
-                  <path d="M10 11l0 6" />
-                  <path d="M14 11l0 6" />
-                  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                </svg>
-              </button>
-
-              <button
-                className="delete-button icon icon-tabler icon-tabler-trash"
-                onClick={() => {
-                  calDrillDown(column.field);
-                }}
-              >
-                Drill
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {data.map((sheet, sheetIndex) => (
-          <div key={sheetIndex} className="sheet">
-            {sheet.map((row, rowIndex) => (
-              <div key={rowIndex} className="data-row">
-                {headings.map((column, colIndex) => (
-                  <div
-                    key={colIndex}
-                    className="data-cell"
-                    contentEditable={column.editable}
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      handleCellChange(
-                        sheetIndex,
-                        rowIndex,
-                        column,
-                        e.target.innerText,
-                        colIndex
-                      )
-                    }
+                  {column.field}
+                </div>
+                <button
+                  className="delete-button icon icon-tabler icon-tabler-trash"
+                  onClick={() => {
+                    deleteColumn(column.field);
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
-                    {row[column.field]}
-                  </div>
-                ))}
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4 7l16 0" />
+                    <path d="M10 11l0 6" />
+                    <path d="M14 11l0 6" />
+                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                  </svg>
+                </button>
+
+                <button
+                  className="delete-button icon icon-tabler icon-tabler-trash"
+                  onClick={() => {
+                    calDrillDown(column.field);
+                  }}
+                >
+                  Drill
+                </button>
               </div>
             ))}
+          </div>
+        </div>
+        {data.map((sheet, sheetIndex) => (
+          <div className="d-flex">
+            <button
+              className=".delete-entity-button  icon icon-tabler icon-tabler-trash"
+              onClick={deleteEntity(sheetIndex)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M4 7l16 0" />
+                <path d="M10 11l0 6" />
+                <path d="M14 11l0 6" />
+                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+              </svg>
+            </button>
+            <div key={sheetIndex} className="sheet ">
+              {sheet.map((row, rowIndex) => (
+                <div key={rowIndex} className="data-row">
+                  {headings.map((column, colIndex) => (
+                    <div
+                      key={colIndex}
+                      className="data-cell"
+                      contentEditable={column.editable}
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        handleCellChange(
+                          sheetIndex,
+                          rowIndex,
+                          column,
+                          e.target.innerText,
+                          colIndex
+                        )
+                      }
+                    >
+                      {row[column.field]}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>

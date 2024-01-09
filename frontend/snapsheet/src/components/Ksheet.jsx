@@ -55,12 +55,14 @@ function NewSheet() {
     <div>
       {treeData ? (
         <div className="ag-theme-quartz" style={{ height: 500 }}>
+          {JSON.stringify(temptreeData)}
           <ExcelSheet
             rowData={rowData}
             columnData={colDefs}
-            datatree={temptreeData}
+            datatree={treeData}
             collection_name={paramName}
           />
+          {JSON.stringify(treeData)}
         </div>
       ) : (
         <p>loading...</p>

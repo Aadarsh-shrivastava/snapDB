@@ -58,7 +58,6 @@ const TreeNode = ({
             />
           </div>
           <div className="col-auto align-items-center">
-
             <input
               className="form-control"
               name="name"
@@ -67,12 +66,21 @@ const TreeNode = ({
             />
           </div>
           <div className="col-auto align-items-center">
-            <button className="btn py-1 px-2 btn-outline-primary" onClick={handleAddChild} disabled={isAddingChild}>
+            <button
+              className="btn py-1 px-2 btn-outline-primary"
+              onClick={handleAddChild}
+              disabled={isAddingChild}
+            >
               +
             </button>
           </div>
           <div className="col-auto align-items-center">
-            <button className="btn py-1 px-2 btn-outline-primary" onClick={handleDelete}>-</button>
+            <button
+              className="btn py-1 px-2 btn-outline-primary"
+              onClick={handleDelete}
+            >
+              -
+            </button>
           </div>
         </div>
       </div>
@@ -245,18 +253,26 @@ const TreeEditor = () => {
 
     return node;
   };
+  const [schemaname, setSchemaName] = useState("");
   const saveSchema = async () => {
     jsonTree = setDataValues(jsonTree);
     console.log(JSON.stringify(jsonTree, null, 2));
-    const response = await fetch("http://localhost:3030/add_entity", {
-      method: "POST",
-      body: JSON.stringify(jsonTree),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `http://localhost:3030/add_entity/${schemaname}`,
+      {
+        method: "POST",
+        body: JSON.stringify(jsonTree),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   };
 
+  const renameSchema = (val) => {
+    setSchemaName(val);
+    console.log(schemaname);
+  };
   return (
     <div>
       <TreeNode
@@ -266,7 +282,22 @@ const TreeEditor = () => {
         handleUpdateLabel={handleUpdateLabel}
         onRenameNode={handleRenameNode}
       />
-      <button className="btn btn-success" onClick={saveSchema}>Save Schema</button>
+
+      <div className="d-flex justify-content-center flex-wrap ">
+        <div className="row align-items-center ">
+          <div className="col-auto align-temns-center m-2">
+            <input
+              name="label"
+              className="form-control"
+              placeholder="Schema Name"
+              onChange={(e) => renameSchema(e.target.value)}
+            />
+          </div>
+        </div>
+        <button className="btn btn-success m-2" onClick={saveSchema}>
+          Save Schema
+        </button>
+      </div>
     </div>
   );
 };

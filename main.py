@@ -71,10 +71,16 @@ async def get_all_collections():
         return {"error": str(e)}
 
 
-@app.post("/add_entity")
-async def add_entity(entity: Entity):
+@app.post("/add_entity/{schemaName}")
+async def add_entity(
+    entity: Entity,
+    schemaName: str = Path(..., title="The name of the collection to delete"),
+):
     current_time = datetime.datetime.now().strftime("%Y%m%d%H%M")
-    collection_name = f"collection_{entity.name.replace(' ', '_')}_{current_time}"
+    if not schemaName or schemaName == "":
+        collection_name = f"collection_{entity.name.replace(' ', '_')}_{current_time}"
+    else:
+        collection_name = schemaName
 
     # Re-establish the MongoDB connection for each request
 
