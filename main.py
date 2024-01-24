@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Body, Path
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pymongo import MongoClient
-from typing import List, Union
+from typing import List, Optional, Union
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import datetime
@@ -33,11 +33,8 @@ class Entity(BaseModel):
     label: str
     name: str
     children: List["Entity"] = []
-    data: Union[List[DataItem], int]
+    data: Optional[Union[List[DataItem], int]] = None
 
-    # client = MongoClient("mongodb://localhost:27017/")
-
-    # db = client["snapDB"]
 
 
 client = MongoClient("mongodb://localhost:27017/")
@@ -82,16 +79,10 @@ async def add_entity(
     else:
         collection_name = schemaName
 
-    # Re-establish the MongoDB connection for each request
-
-    # Create a new collection or use an existing one
+  
     collection = db[collection_name]
 
-    # Insert the entity into the collection
     result = collection.insert_one(jsonable_encoder(entity))
-
-    # Close the MongoDB connection
-    # client.close()
 
     return JSONResponse(content=jsonable_encoder(entity), status_code=201)
 

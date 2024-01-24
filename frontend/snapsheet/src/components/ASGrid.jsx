@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelectionContainer } from "@air/react-drag-to-select";
 import "./ExcelSheet.css";
 import "scrollable-component";
+import { Link } from "react-router-dom";
 const ExcelSheet = ({
   rowData,
   columnData,
@@ -185,8 +186,14 @@ const ExcelSheet = ({
     setDataTree((prevDataTree) => {
       const newDataTree = JSON.parse(JSON.stringify(prevDataTree));
       var currentIndex = colIndex - drillCount;
-
+      
       const handleDrillDown = (node) => {
+        var prevIndex=currentIndex-1;
+        while(node.data[prevIndex].value==0){
+          prevIndex-=1
+          if(prevIndex<0)return;
+        }
+        console.log(prevIndex,'previndex fro',node.data[prevIndex])
         const traverse = (node) => {
           if (node.children && node.children.length > 0) {
             let sum = 0,
@@ -199,8 +206,8 @@ const ExcelSheet = ({
               else {
                 childNode.data[currentIndex].value = Math.round(
                   (node.data[currentIndex].value *
-                    childNode.data[currentIndex - 1].value) /
-                    node.data[currentIndex - 1].value
+                    childNode.data[prevIndex].value) /
+                    node.data[prevIndex].value
                 );
               }
 
@@ -465,7 +472,7 @@ const ExcelSheet = ({
     });
     newData.push(newArr);
     setData([...newData]); // Update state with a new array
-    window.location.reload()
+    window.location.reload();
   };
 
   const changeColumnNameInDataTree = (oldColumnName, newColumnName) => {
@@ -646,6 +653,12 @@ const ExcelSheet = ({
       <button className="btn btn-outline-primary p-1 m-2" onClick={onAddData}>
         Add Data
       </button>
+      <Link
+        className="btn btn-outline-primary p-1 m-2"
+        to={`/Schemaeditor/${collection_name}`}
+      >
+        Edit Schema
+      </Link>
       <div className="excel-sheet">
         <div className="d-flex">
           <button
@@ -704,8 +717,6 @@ const ExcelSheet = ({
                     <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                   </svg>
                 </button>
-
-                
               </div>
             ))}
           </div>
